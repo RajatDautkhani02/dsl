@@ -1,0 +1,193 @@
+'''
+AIM:
+A) Write a Python program 
+
+1) Store names and mobile numbers 
+of your friends in sorted order on names
+2) Search friend name using Binary Search (recursive and nonrecursive)
+3) Insert new friend in phonebook list
+
+B) Write a Python program 
+
+1) Store names and mobile numbers 
+of your friends in sorted order on names
+2) Search friend name using Fibonacci search
+3) Insert new friend in phonebook list
+
+INPUT: 
+	1. Number of Friends in PhoneBook
+	2. Name and mobile of Friends
+
+OUTPUT:
+	1. Display Friend list
+	2. Search friend using Binary Search
+	3. Search friend using Fibonacci Search
+
+AUTHOR: Heramb Mahajan
+DATE: 26-8-2024
+'''
+class Friend:
+	def __init__(self):
+		name=None
+		mobile=0
+
+
+class PhoneBook:
+	def __init__(self):
+		self.N=0
+		self.friendList=[]
+
+   
+	def getFriendDetails(self,nof):
+		self.N=nof
+		for i in range(self.N):
+			friend=Friend()
+			print("Enter Friend name and mobile for Friend-",i+1)
+			name=input("Enter Name of friend::")
+			mobile=int(input("Enter mobile no. of friend::"))
+			friend.name=name
+			friend.mobile=mobile
+			self.friendList.append(friend)
+
+   
+	def displayFriendList(self):
+		print("\nThe Friend PhoneBook is")
+		for i in range(self.N):
+			print(self.friendList[i].name,"  ",self.friendList[i].mobile )
+
+   
+	def binarySearchNonrecursive(self,key):
+		l=0
+		u=self.N-1
+		while(l<=u):
+			mid=(l+u)//2
+			if(key==self.friendList[mid].name):
+				print("\nName found in Friend list at location ",mid+1)
+				break
+			elif(key>self.friendList[mid].name):
+				l=mid+1
+			else:
+				u=mid-1
+		if(l>u):
+			print("Name not found")
+
+	def fibMonaccianSearch(self,x):
+			n = self.N
+			# Initialize fibonacci numbers
+			fibMMm2 = 0  # (m-2)'th Fibonacci No.
+			fibMMm1 = 1  # (m-1)'th Fibonacci No.
+			fibM = fibMMm2 + fibMMm1  # m'th Fibonacci
+
+			# fibM is going to store the smallest
+			# Fibonacci Number greater than or equal to n
+			while (fibM < n):
+				fibMMm2 = fibMMm1
+				fibMMm1 = fibM
+				fibM = fibMMm2 + fibMMm1
+
+			# Marks the eliminated range from front
+			offset = -1
+
+			# while there are elements to be inspected.
+			# Note that we compare arr[fibMm2] with x.
+			# When fibM becomes 1, fibMm2 becomes 0
+			while (fibM > 1):
+
+				# Check if fibMm2 is a valid location
+				i = min(offset+fibMMm2, n-1)
+
+				# If x is greater than the value at
+				# index fibMm2, cut the subarray array
+				# from offset to i
+				if (self.friendList[i].name < x):
+					fibM = fibMMm1
+					fibMMm1 = fibMMm2
+					fibMMm2 = fibM - fibMMm1
+					offset = i
+
+				# If x is less than the value at
+				# index fibMm2, cut the subarray
+				# after i+1
+				elif (self.friendList[i].name  > x):
+					fibM = fibMMm2
+					fibMMm1 = fibMMm1 - fibMMm2
+					fibMMm2 = fibM - fibMMm1
+
+				# element found. return index
+				else:
+					return i
+
+			# comparing the last element with x */
+			if(fibMMm1 and self.friendList[n-1].name  == x):
+				return n-1
+
+			# element not found. return -1
+			return -1
+			
+	#Insert new friend details 
+	def insertFriend(self,name,mobile):
+		friend=Friend()
+		friend.name=name
+		friend.mobile=mobile
+		self.friendList.append(friend)
+		self.N+=1
+		for i in range (self.N-1,0,-1):
+			if(self.friendList[i].name < self.friendList[i - 1].name):
+				temp=self.friendList[i]
+				self.friendList[i] = self.friendList[i - 1]
+				self.friendList[i - 1] = temp
+		self.displayFriendList()
+
+	def bubbleSort(self):
+		for i in range(self.N - 1):
+			for j in range(0, self.N - i - 1):
+				if self.friendList[j].name > self.friendList[j + 1].name:
+					temp = self.friendList[j]
+					self.friendList[j] = self.friendList[j + 1]
+					self.friendList[j + 1] = temp
+
+#Driver Code
+frn=PhoneBook()
+choice=0
+
+while(choice != 6):
+	print("\n*************FRIEND PHONE BOOK****************")
+	print("1. Read Friend name and mobile details")
+	print("2. Display Friend details")
+	print("3. Search friend name using Binary Search")
+	print("4. Search friend name using Fibonacci Search")
+	print("5. Insert new friend details")
+	print("6. Exit Application")
+	choice=int(input("What operation::"))
+
+	if (choice ==1):
+		n=int(input("Enter number of Friends::"))
+		frn.getFriendDetails(n)
+	elif (choice ==2):
+		frn.bubbleSort()
+		frn.displayFriendList()
+	elif (choice ==3):
+		print("1. Search name using Non Recurssive")
+		print("2. Search name using Recurssive")
+		choice1=int(input("What operation::"))
+		if(choice1==1):
+			name=input("Enter the name to be searched:")
+			frn.binarySearchNonrecursive(name)
+		elif(choice1==2):
+			name=input("Enter the name to be searched:")
+			frn.binarySearchrecursive(name)
+		else:
+			print("Wrong Choice")
+	elif (choice ==4):
+		x=input("Enter name::")
+		y=frn.fibMonaccianSearch(x)
+		print(y)
+	elif (choice ==5):
+		name=input("Enter Name to insert")
+		mobile=int(input("Enter moblie number"))
+		frn.insertFriend(name,mobile)
+	elif (choice ==6):
+		print("Good By")
+		break
+	else:
+		print("Wrong Choice")
